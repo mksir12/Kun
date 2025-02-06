@@ -1,0 +1,48 @@
+"result-container" id="resultContainer">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        function searchSong() {
+            const songName = document.getElementById('songInput').value;
+            const resultContainer = document.getElementById('resultContainer');
+            
+            if (!songName) {
+                alert('Please enter a song name');
+                return;
+            }
+
+            // Encode the song name for URL
+            const encodedSong = encodeURIComponent(songName);
+            
+            // Construct the API URL
+            const apiUrl = https://api.siputzx.my.id/api/d/ytmp4?url=https://www.youtube.com/watch?v=${encodedSong};
+            
+            // Fetch data from the API
+            fetch(apiUrl, { mode: 'no-cors' })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                })
+                .then(data => {
+                    // Process the data here
+                    if (data && data.status === 'success') {
+                        const resultHTML = 
+                            <div class="result">
+                                <h3>${data.data.title}</h3>
+                                <p>Artist: ${data.data.artist}</p>
+                                <p>YouTube URL: <a href="${data.data.url}" target="_blank">${data.data.url}</a></p>
+                            </div>
+                        ;
+                        resultContainer.innerHTML = resultHTML;
+                    } else {
+                        resultContainer.innerHTML = '<p>Song not found</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultContainer.innerHTML = '<p>Error fetching song information</p>';
+                });
+        }
